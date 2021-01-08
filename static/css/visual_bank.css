@@ -1,0 +1,161 @@
+/* ----------------- global id annotation ----------------- */
+* {
+    box-sizing: border-box
+}
+
+.id-annotation {
+    /* border-style: solid; */
+    border-color: blue;
+    border-width: 2px;
+}
+
+/* ----------------- header of id annotation ----------------- */
+.id-annotation h2 {
+    margin: 0;
+    margin-bottom: 20px;
+    background-color: lightblue;
+}
+
+/* ----------------- user interaction section -----------------*/
+.grid-container {
+    display: grid;
+    margin-right: 20px;
+    grid-template-columns: 3fr 3fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    column-gap: 20px;
+}
+
+.item-mode {
+    color: black;
+    background-color: #3794e0;
+    padding: 0px 70px;
+}
+
+.item-imnum {
+    color: black;
+    background-color: #3794e0;
+    padding: 0px 40px;
+}
+
+.item-mode {
+    grid-row-start: 1;
+    grid-column-start: 1;
+}
+
+.item-imnum {
+    grid-row-start: 1;
+    grid-column-start: 2;
+}
+
+.item-mode-select {
+    grid-row-start: 2;
+    grid-column-start: 1;
+}
+
+.item-mode-select select {
+    width: 100%;
+    background-color: #afd5f0;
+    padding-top: 6px;
+    border: none;
+}
+
+.item-imnum-input {
+    overflow: hidden;
+    grid-row-start: 2;
+    grid-column-start: 2;
+}
+
+.item-imnum-input input {
+    width: 100%;
+    background-color: #afd5f0;
+    border-style: solid;
+    border-width: 1px;
+    border: none;
+}
+
+.item-submit-btn {
+    grid-row-start: 1;
+    grid-row-end: 3;
+}
+
+.btn-load{
+    background-color: #DC3545;
+    border: none;
+    color: white;
+    padding: 12px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+
+/* ----------------- display section ----------------- */
+.display-info {
+    clear: both;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    column-gap: 20px;
+    padding-top: 20px;
+    margin-left: 20px;
+    overflow: auto;
+}
+
+.display-info label {
+    width: 4em;
+    display: inline-block;
+    background-color: rgb(145, 200, 236);
+    color: white;
+    text-align: left;
+    padding-left: 4px;
+    margin-right: 0;
+    padding-top: 10px;
+}
+
+.display-info input {
+    display: inline-block;
+    width: 200px;
+    background: lightblue;
+    padding-left: 4px;
+    /* margin-left: -4px; */
+    border-style: none;
+    padding-top: 10px;
+}
+
+.btn-flexbox {
+    display: flex;
+    justify-content: left;
+    padding: 0;
+}
+
+.btn-flexbox .btn-transfer {
+    display: inline-block;
+    width: 6em;
+    text-align: center;
+    margin: 10px 5px;
+    padding: 10px 10px;
+    background-color: blue;
+    color: white;
+    border-style: none;
+    border-radius: 2px;
+}
+
+.btn-save {
+    display: inline-block;
+    width: 6em;
+    text-align: center;
+    margin: 10px 5px;
+    padding: 10px 10px;
+    background-color: red;
+    color: white;
+    border-style: none;
+    border-radius: 2px;
+}
+
+.canvas_preview_img{
+    width: 500px;
+    height: 300px;
+}
+
+.idcard_info div{
+    margin: 10px 0px;
+}
