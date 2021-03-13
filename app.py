@@ -46,6 +46,7 @@ SERVER_IP = str(config.get('main', 'SERVER_IP'))
 SERVER_PORT = int(config.get('main', 'SERVER_PORT'))
 UPLOAD_FOLDER = str(config.get('main', 'UPLOAD_FOLDER'))
 RESULT_FOLDER = str(config.get('main', 'RESULT_FOLDER')) 
+RECOG_FOLDER = str(config.get('main', 'RECOG_FOLDER'))
 
 if not os.path.exists(LOG_PATH):
     os.mkdir(LOG_PATH)
@@ -55,6 +56,9 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 if not os.path.exists(RESULT_FOLDER):
     os.mkdir(RESULT_FOLDER)
+
+if not os.path.exists(RECOG_FOLDER):
+    os.mkdir(RECOG_FOLDER)
 
 #####CREATE LOGGER#####
 logging.basicConfig(filename=os.path.join(LOG_PATH, str(time.time())+".log"), filemode="w", level=logging.DEBUG, format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
@@ -94,7 +98,7 @@ def draw_box(image, bbox, color=(0,0,255)):
     return image 
 
 def write_text(image, text, x, y):
-    image = cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+    image = cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     return image
 
@@ -289,7 +293,7 @@ def get_info_card(image, list_info_bankcard, list_flag_bbox):
                         [w, bbox_name[2][1]], [0, bbox_name[3][1]]]
     polygon_name = Polygon(bbox_polygon_name)
 
-    image = draw_box(image, bbox_polygon_name)
+    # image = draw_box(image, bbox_polygon_name)
 
     list_name = name.split()
     first_name = firstnameMatch(list_name[0])
@@ -316,7 +320,7 @@ def get_info_card(image, list_info_bankcard, list_flag_bbox):
 
     return bank, name, type_card, valid_from, good_thru, number
 
-@app.route('/bankcard')
+@app.route('/')
 def home():
     return render_template('visual_bank.html')
 
@@ -332,14 +336,23 @@ def home():
 #                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
     
-@app.route('/predict', methods=['POST'])
+@app.route('/recog', methods=['POST'])
 def predict_card():
+    print("predict_card")
     if request.method == 'POST':
+        print("predict_card")
         try:
-            file = request.files['file']
-                
-            image_file = file.read()
-            image = cv2.imdecode(np.frombuffer(image_file, dtype=np.uint8), -1)
+            print("predict_card")
+            try:
+                file = request.files['file']
+                    
+                image_file = file.read()
+                image = cv2.imdecode(np.frombuffer(image_file, dtype=np.uint8), -1)
+            except Exception as e:
+                print(e)
+                logger.error(str(e))
+                logger.error(str(traceback.print_exc()))
+                return_result = {'code': '1001', 'status': rcode.code_1001}
 
             now = datetime.now()
             date_time = now.strftime("%m_%d_%Y_%H_%M_%S")
@@ -369,6 +382,9 @@ def predict_card():
             image, list_info_bankcard, list_flag_bbox = draw_bankcard(image, predict)
             bank, name, type_card, valid_from, good_thru, number = get_info_card(image, list_info_bankcard, list_flag_bbox)
 
+            image_path_recog = os.path.join(RECOG_FOLDER, date_time+'.jpg')
+            cv2.imwrite(image_path_recog, image)
+
             print("bank: ", bank)
             print("name: ", name)
             print("number: ", number)
@@ -377,6 +393,7 @@ def predict_card():
             print("good_thru: ", good_thru)
 
             return_result ={
+                'recog_path': image_path_recog,
                 'path': image_path,
                 'bank': bank,
                 'name': name,
@@ -390,9 +407,10 @@ def predict_card():
                 json.dump(return_result, f)
 
         except Exception as e:
+            print("ERROR: ", e)
             logger.error(str(e))
             logger.error(str(traceback.print_exc()))
-            return_result = {'code': '1001', 'status': rcode.code_1001}
+            return_result = {'code': '1009', 'status': rcode.code_1001}
 
         finally:
             return jsonify(return_result)
